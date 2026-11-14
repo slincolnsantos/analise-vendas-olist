@@ -1,19 +1,31 @@
+-- ============================================================
+-- Análise de Vendas Olist | Consultas SQL (SQLite)
+-- Banco: olist.db
+-- Tabelas usadas: olist_orders_dataset, olist_order_items_dataset,
+--                 olist_products_dataset
+-- ============================================================
+
+
 -- Consulta 1: Quantidade de pedidos por status
 SELECT order_status, COUNT(*) AS total
 FROM olist_orders_dataset
 GROUP BY order_status;
 
+
 -- Consulta 2: Receita total
 SELECT SUM(price) AS receita_total
 FROM olist_order_items_dataset;
+
 
 -- Consulta 3: Quantidade de produtos diferentes vendidos
 SELECT COUNT(DISTINCT product_id) AS produtos_vendidos
 FROM olist_order_items_dataset;
 
+
 -- Consulta 4: Preço médio por item
 SELECT ROUND(AVG(price), 2) AS preco_medio
 FROM olist_order_items_dataset;
+
 
 -- Consulta 5: Top 10 categorias com mais produtos cadastrados
 SELECT product_category_name, COUNT(*) AS total
@@ -22,7 +34,8 @@ GROUP BY product_category_name
 ORDER BY total DESC
 LIMIT 10;
 
--- Consulta 6: Top 10 categorias por receita
+
+-- Consulta 6: Top 10 categorias por receita (JOIN entre itens e produtos)
 SELECT p.product_category_name AS categoria,
        ROUND(SUM(i.price), 2) AS receita
 FROM olist_order_items_dataset i
@@ -31,3 +44,11 @@ JOIN olist_products_dataset p
 GROUP BY p.product_category_name
 ORDER BY receita DESC
 LIMIT 10;
+
+
+-- Consulta 7: Pedidos por mês (checagem de qualidade dos dados)
+SELECT SUBSTR(order_purchase_timestamp, 1, 7) AS ano_mes,
+       COUNT(*) AS pedidos
+FROM olist_orders_dataset
+GROUP BY ano_mes
+ORDER BY ano_mes;
